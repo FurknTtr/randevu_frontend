@@ -90,6 +90,7 @@ const loginForm = ref({
   password: ''
 })
 
+
 const handleLogin = () => {
 
   axios.post('http://localhost:8080/member/login', 
@@ -99,7 +100,9 @@ const handleLogin = () => {
     }
   )
   .then((cevap) => {
-    localStorage.setItem('userData', JSON.stringify(cevap.data));
+   //userData key i ile saklıcam kalanları böylece pratik geçiş yapmış olucam.
+   //artık sadece token var içinde
+    localStorage.setItem('token', JSON.stringify(cevap.data));
     router.push({name: 'menu'});
   })
   .catch((hata)=>{

@@ -196,13 +196,13 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
 const userForm = ref({
   hasCompany: false,
   userName: "",
-  token: "", //şimdilik id dönücem buraya
   location: {
     //burası da şimdilik boş kalacak da user'ın işi iyice büyüyor
     city: "",
@@ -211,14 +211,25 @@ const userForm = ref({
 });
 
 onMounted(() => {
-  const userDataPackage = localStorage.getItem("userData");
-  if (userDataPackage) {
-    const userData = JSON.parse(userDataPackage);
+  axios.get('http://localhost:8080/member/me', {
+    headers: {
+    Authorization: `Bearer ${localStorage.getItem('token')}`
+  },
+  })
+  .then((response)=>{
+    userForm.value.hasCompany = response.data.hasCompany;
+    userForm.value.userName = response.data.userName;
 
-    userForm.value.hasCompany = userData.hasCompany;
-    userForm.value.userName = userData.userName;
-    userForm.value.token = userData.id;
-  }
+    /*
+    id;
+    userName;
+    email;
+    phone;
+    isActive;
+    hasCompany;
+    */
+    localStorage.setItem("userData", JSON.stringify(response.data));
+  })
 });
 
 // --- DROPDOWN İÇİN YENİ DEĞİŞKEN ---

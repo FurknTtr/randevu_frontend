@@ -132,8 +132,6 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-let id;
-
 const userForm = ref({
   userName: '',
   email: '',
@@ -154,16 +152,20 @@ onMounted(() =>{
     userForm.value.userName = userData.userName;
     userForm.value.email = userData.email;
     userForm.value.phone = userData.phone;
-    id = userData.id;
   }
 })
 
 const updateProfile = () => {
-  axios.put(`http://localhost:8080/member/${id}/update`,
+  axios.put(`http://localhost:8080/member/update`,
     {
       userName: userForm.value.userName,
       email: userForm.value.email,
       phone: userForm.value.phone
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     }
    )
    .then((response)=>{
@@ -174,7 +176,7 @@ const updateProfile = () => {
         ...oldStorage, 
         userName: userForm.value.userName, 
         email: userForm.value.email, 
-        phone: userForm.value.phone 
+        phone: userForm.value.phone, 
     };
     localStorage.setItem('userData', JSON.stringify(newStorage));
 
@@ -191,10 +193,15 @@ const updatePassword = () => {
     return;
   }
 
-  axios.put(`http://localhost:8080/member/${id}/password`,
+  axios.put(`http://localhost:8080/member/password`,
     {
       oldPassword: passwordData.value.current,
       newPassword: passwordData.value.new
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     }
   )
   .then(response=>{
